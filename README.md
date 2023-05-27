@@ -11,3 +11,5 @@ second :-
 6) u will need to put the link of the repo ('https://github.com/a7mdkhald/Classroom.git')
 7) then on the local path choose the file u just created 
 8) then hit Clone and gg now u can fetch and push to the repo 
+9) dah desrepect
+10) 
