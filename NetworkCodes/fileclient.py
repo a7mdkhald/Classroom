@@ -1,9 +1,10 @@
 import socket
-import os
+import os.path
+import PySimpleGUI as sg 
 
 def client_program():
     host = socket.gethostname()  # as both code is running on same pc
-    port = 5000  # socket server port number
+    port = 5003  # socket server port number
 
     client_socket = socket.socket()  # instantiate
     client_socket.connect((host, port))  # connect to the server
@@ -14,7 +15,7 @@ def client_program():
     filesize = int(filesize)
     
     # specify the directory where the file should be saved
-    save_dir = 'D:\TESTING\client files'
+    save_dir = 'D:\\networks project\\Classroom\\NetworkCodes\\client files'
     
     with open(os.path.join(save_dir, filename), 'wb') as f:
         while filesize > 0:

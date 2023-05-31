@@ -1,10 +1,11 @@
 import socket
 import os
+import PySimpleGUI as sg
 
 def server_program():
     # get the hostname
     host = socket.gethostname()
-    port = 5000  # initiate port no above 1024
+    port = 5003  # initiate port no above 1024
 
     server_socket = socket.socket()  # get instance
     # look closely. The bind() function takes tuple as argument
@@ -15,13 +16,27 @@ def server_program():
     conn, address = server_socket.accept()  # accept new connection
     print("Connection from: " + str(address))
     
-    # send file to client
-    filename = 'example.txt'
-    filesize = os.path.getsize(filename)
-    conn.send(f'{filename} {filesize}'.encode())
+    # create GUI to select file to send
+    layout = [[sg.Text('Select file to send')],
+              [sg.Input(key='-FILE-'), sg.FileBrowse()],
+              [sg.Button('Send'), sg.Button('Cancel')]]
     
-    with open(filename, 'rb') as f:
-        conn.sendfile(f)
+    window = sg.Window('File Sender', layout)
+    
+    while True:
+        event, values = window.read()
+        if event == 'Send':
+            filename = values['-FILE-']
+            if filename:
+                filesize = os.path.getsize(filename)
+                conn.send(f'{os.path.basename(filename)} {filesize}'.encode())    
+                with open(filename, 'rb') as f:
+                    conn.sendfile(f)
+                break
+        elif event in (None, 'Cancel'):
+            break
+    
+    window.close()
     
     conn.close()  # close the connection
 
