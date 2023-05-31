@@ -1,5 +1,5 @@
 from tkinter import *
-from vidstream import StreamingServer
+from vidstream import ScreenShareClient
 import threading
 
 
@@ -35,17 +35,17 @@ class ClassroomApp:
         student_ip = self.student_entry.get()
         print(f"Connecting {student_ip} to {teacher_ip}")
 
-        
+       
 
-        receiver = StreamingServer(teacher_ip,9000)
-
-        t= threading.Thread(target=receiver.start_server)
+        sender = ScreenShareClient(student_ip,9000)
+        t= threading.Thread(target=sender.start_stream)
 
         t.start()
 
         while input("") !='STOP':
             continue
-        receiver.stop_server()
+        sender.stop_stream()
+
 
                 # add the frame to the canvas
         #stream_canvas.create_window((0, 0), window=stream_frame, anchor="nw")
