@@ -19,10 +19,10 @@ class ClassroomApp:
 
         # create buttons
         self.connect_button = Button(
-            master, text="Start sharing ", command=self.connect1
+            master, text="Start sharing ", command=self.connect2
         )
         self.connect2_button = Button(
-            master, text="Start Veiwing ", command=self.connect2
+            master, text="Start Veiwing ", command=self.connect1
         )
         self.quit_button = Button(master, text="Quit", command=master.quit)
 
