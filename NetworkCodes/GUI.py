@@ -12,9 +12,9 @@ class ClassroomApp:
 
         # create widgets for GUI 2
         self.label2 = Label(master, text="Teacher")
-        self.button2 = Button(master, text="Click me in GUI 2", command=self.button2_click)
+        self.button2 = Button(master, text="i am a teacher", command=self.button2_click)
         self.label3 = Label(master, text="student")
-        self.button3 = Button(master, text="Click me in GUI 2", command=self.button3_click)
+        self.button3 = Button(master, text="i am a student", command=self.button3_click)
 
         self.label2.grid(row=1, column=0)
         self.label3.grid(row=2, column=0)
@@ -34,34 +34,34 @@ class Gui2:
 
         # create labels
         self.teacher_label = Label(master, text="Teacher")
-        self.student_label = Label(master, text="Student")
+        #self.student_label = Label(master, text="Student")
 
         # create entry boxes
         self.teacher_entry = Entry(master)
-        self.student_entry = Entry(master)
+        #self.student_entry = Entry(master)
 
         # create buttons
         self.connect_button = Button(
             master, text="Start Vewing ", command=self.connect1
         )
         self.connect2_button = Button(
-            master, text="Start Sharing ", command=self.connect2
+           master, text="Start Sharing ", command=self.connect2
         )
         self.quit_button = Button(master, text="Quit", command=master.quit)
 
         # layout widgets
         self.teacher_label.grid(row=0, column=0)
         self.teacher_entry.grid(row=0, column=1)
-        self.student_label.grid(row=1, column=0)
-        self.student_entry.grid(row=1, column=1)
+        #self.student_label.grid(row=1, column=0)
+        #self.student_entry.grid(row=1, column=1)
         self.connect_button.grid(row=2, column=0)
         self.connect2_button.grid(row=2 , column=3)
         self.quit_button.grid(row=2, column=1)
 
     def connect1(self):
         teacher_ip = self.teacher_entry.get()
-        student_ip = self.student_entry.get()
-        print(f"Connecting {student_ip} to {teacher_ip}")
+        #student_ip = self.student_entry.get()
+        print(f"Connecting  to {teacher_ip}")
         receiver = StreamingServer(teacher_ip,9000)
 
         t= threading.Thread(target=receiver.start_server)
@@ -78,11 +78,11 @@ class Gui2:
 
     def connect2(self):
             teacher_ip = self.teacher_entry.get()
-            student_ip = self.student_entry.get()
-            print(f"Connecting {student_ip} to {teacher_ip}")
+            #student_ip = self.student_entry.get()
+            print(f"Connecting to {teacher_ip}")
 
             
-            sender = ScreenShareClient(student_ip,9000)
+            sender = ScreenShareClient(teacher_ip,9000)
             t= threading.Thread(target=sender.start_stream)
 
             t.start()
@@ -97,11 +97,11 @@ class Gui3:
         master.title("Classroom App")
 
         # create labels
-        self.teacher_label = Label(master, text="Teacher")
+        #self.teacher_label = Label(master, text="Teacher")
         self.student_label = Label(master, text="Student")
 
         # create entry boxes
-        self.teacher_entry = Entry(master)
+        #self.teacher_entry = Entry(master)
         self.student_entry = Entry(master)
 
         # create buttons
@@ -114,8 +114,8 @@ class Gui3:
         self.quit_button = Button(master, text="Quit", command=master.quit)
 
         # layout widgets
-        self.teacher_label.grid(row=0, column=0)
-        self.teacher_entry.grid(row=0, column=1)
+        #self.teacher_label.grid(row=0, column=0)
+        #self.teacher_entry.grid(row=0, column=1)
         self.student_label.grid(row=1, column=0)
         self.student_entry.grid(row=1, column=1)
         self.connect_button.grid(row=2, column=0)
@@ -123,10 +123,10 @@ class Gui3:
         self.quit_button.grid(row=2, column=1)
 
     def connect1(self):
-        teacher_ip = self.teacher_entry.get()
+        #teacher_ip = self.teacher_entry.get()
         student_ip = self.student_entry.get()
-        print(f"Connecting {student_ip} to {teacher_ip}")
-        receiver = StreamingServer(teacher_ip,9000)
+        print(f"Connecting {student_ip} ")
+        receiver = StreamingServer(student_ip,9000)
 
         t= threading.Thread(target=receiver.start_server)
 
@@ -141,9 +141,9 @@ class Gui3:
 
 
     def connect2(self):
-            teacher_ip = self.teacher_entry.get()
+           # teacher_ip = self.teacher_entry.get()
             student_ip = self.student_entry.get()
-            print(f"Connecting {student_ip} to {teacher_ip}")
+            print(f"Connecting {student_ip} ")
 
             
             sender = ScreenShareClient(student_ip,9000)
