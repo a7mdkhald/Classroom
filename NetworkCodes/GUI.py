@@ -39,14 +39,16 @@ class ClassroomApp:
         teacher_ip = self.teacher_entry.get()
         student_ip = self.student_entry.get()
         print(f"Connecting {student_ip} to {teacher_ip}")
-        sender = ScreenShareClient(student_ip,9000)
-        t= threading.Thread(target=sender.start_stream)
+        receiver = StreamingServer(teacher_ip,9000)
+
+        t= threading.Thread(target=receiver.start_server)
 
         t.start()
 
         while input("") !='STOP':
             continue
-        sender.stop_stream()
+        receiver.stop_server()
+        
        
                 
 
@@ -56,15 +58,15 @@ class ClassroomApp:
             student_ip = self.student_entry.get()
             print(f"Connecting {student_ip} to {teacher_ip}")
 
-            receiver = StreamingServer(teacher_ip,9000)
-
-            t= threading.Thread(target=receiver.start_server)
+            
+            sender = ScreenShareClient(student_ip,9000)
+            t= threading.Thread(target=sender.start_stream)
 
             t.start()
 
             while input("") !='STOP':
                 continue
-            receiver.stop_server()
+            sender.stop_stream()
 
            
 
