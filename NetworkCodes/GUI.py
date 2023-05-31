@@ -40,33 +40,8 @@ class ClassroomApp:
         student_ip = self.student_entry.get()
         print(f"Connecting {student_ip} to {teacher_ip}")
 
-        # # create a new window for streaming content
-        # stream_window = Toplevel(self.master)
-        # stream_window.title(f"{teacher_ip}'s Stream")
-
-        # # create a canvas for displaying content
-        # stream_canvas = Canvas(stream_window, bg="white", width=800, height=600)
-        # stream_canvas.pack(side=LEFT, fill=BOTH, expand=True)
-
-        # # create a scrollbar for the canvas
-        # stream_scrollbar = Scrollbar(
-        #     stream_window, orient=VERTICAL, command=stream_canvas.yview
-        # )
-        # stream_scrollbar.pack(side=RIGHT, fill=Y)
-
-        # # configure the canvas to use the scrollbar
-        # stream_canvas.configure(yscrollcommand=stream_scrollbar.set)
-        # stream_canvas.bind(
-        #     "<Configure>",
-        #     lambda e: stream_canvas.configure(scrollregion=stream_canvas.bbox("all")),
-        # )
-
-        # # create a frame inside the canvas for displaying content
-        # stream_frame = Frame(stream_canvas)
-
-        receiver = StreamingServer(teacher_ip,9000)
-
-        t= threading.Thread(target=receiver.start_server)
+        sender = ScreenShareClient('192.168.1.10',9000)
+        t= threading.Thread(target=sender.start_stream)
 
         t.start()
 
