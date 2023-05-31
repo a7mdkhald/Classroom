@@ -19,10 +19,10 @@ class ClassroomApp:
 
         # create buttons
         self.connect_button = Button(
-            master, text="Start sharing ", command=self.connect2
+            master, text="Start sharing ", command=self.connect1
         )
         self.connect2_button = Button(
-            master, text="Start Veiwing ", command=self.connect1
+            master, text="Start Veiwing ", command=self.connect2
         )
         self.quit_button = Button(master, text="Quit", command=master.quit)
 
@@ -39,16 +39,15 @@ class ClassroomApp:
         teacher_ip = self.teacher_entry.get()
         student_ip = self.student_entry.get()
         print(f"Connecting {student_ip} to {teacher_ip}")
-
-        receiver = StreamingServer('192.168.1.5',9000)
-
-        t= threading.Thread(target=receiver.start_server)
+        sender = ScreenShareClient(student_ip,9000)
+        t= threading.Thread(target=sender.start_stream)
 
         t.start()
 
         while input("") !='STOP':
             continue
-        receiver.stop_server()
+        sender.stop_stream()
+       
                 
 
 
@@ -57,16 +56,17 @@ class ClassroomApp:
             student_ip = self.student_entry.get()
             print(f"Connecting {student_ip} to {teacher_ip}")
 
-            
+            receiver = StreamingServer(teacher_ip,9000)
 
-            sender = ScreenShareClient(student_ip,9000)
-            t= threading.Thread(target=sender.start_stream)
+            t= threading.Thread(target=receiver.start_server)
 
             t.start()
 
             while input("") !='STOP':
                 continue
-            sender.stop_stream()
+            receiver.stop_server()
+
+           
 
                 
 root = Tk()
