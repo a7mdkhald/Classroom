@@ -40,14 +40,15 @@ class ClassroomApp:
         student_ip = self.student_entry.get()
         print(f"Connecting {student_ip} to {teacher_ip}")
 
-        sender = ScreenShareClient('192.168.1.10',9000)
-        t= threading.Thread(target=sender.start_stream)
+        receiver = StreamingServer('192.168.1.5',9000)
+
+        t= threading.Thread(target=receiver.start_server)
 
         t.start()
 
         while input("") !='STOP':
             continue
-        sender.stop_stream()
+        receiver.stop_server()
                 
 
 
