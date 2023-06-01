@@ -6,6 +6,7 @@ import socket
 import os
 import time
 import queue
+import subprocess
 
 
 class start:
@@ -64,17 +65,8 @@ class start:
                 classroom.run()
 
             elif event == "   ":
-                file3 = File1(q)
-                file4 = File2(q)
-                threading.Thread(target=file3.server_program).start()
-                threading.Thread(target=file4.client_program).start()
-
-            try:
-                data = q.get_nowait()
-                # Process data from queue here
-                # Update GUI as needed
-            except queue.Empty:
-                pass
+                subprocess.Popen(['python', 'fileclient.py'])
+                File1.server_program()
 
         self.window.close()
 
@@ -215,79 +207,54 @@ class Gui3:
 
 
 class File1:
-    def __init__(self, q):
-        self.q = q
+   def server_program():
+    # get the hostname
+    host = socket.gethostname()
+    port = 5003  # initiate port no above 1024
 
-    def server_program(self):
-        # get the hostname
-        host = socket.gethostname()
-        port = 5003  # initiate port no above 1024
-        self.q.put("Data from server_program")
+    server_socket = socket.socket()  # get instance
+    # look closely. The bind() function takes tuple as argument
+    server_socket.bind((host, port))  # bind host address and port together
 
-        server_socket = socket.socket()  # get instance
-        # look closely. The bind() function takes tuple as argument
-        server_socket.bind((host, port))  # bind host address and port together
-
-        # configure how many client the server can listen simultaneously
-        server_socket.listen(3)
-        conn, address = server_socket.accept()  # accept new connection
-        print("Connection from: " + str(address))
-
-        # create GUI to select file to send
-        layout = [
-            [sg.Text("Select file to send")],
-            [sg.Input(key="-FILE-"), sg.FileBrowse()],
-            [sg.Button("Send"), sg.Button("Cancel")],
-        ]
-
-        self.window = sg.Window("File Sender", layout)
-
-        while True:
-            event, values = self.window.read()
-            if event == "Send":
-                filename = values["-FILE-"]
-                if filename:
+    # configure how many client the server can listen simultaneously
+    server_socket.listen(3)
+    conn, address = server_socket.accept()  # accept new connection
+    print("Connection from: " + str(address))
+    
+    # create GUI to select file to send
+    layout = [[sg.Text('Select file to send')],
+              [sg.Input(key='-FILE-'), sg.FileBrowse()],
+              [sg.Button('Send'), sg.Button('Cancel')]]
+    
+    window = sg.Window('File Sender', layout)
+    
+    while True:
+        event, values = window.read()
+        if event == 'Send':
+            filename = values['-FILE-']
+            if filename:
+                try:
                     filesize = os.path.getsize(filename)
-                    conn.send(f"{os.path.basename(filename)} {filesize}".encode())
-                    with open(filename, "rb") as f:
+                    conn.send(f'{os.path.basename(filename)} {filesize}'.encode())    
+                    with open(filename, 'rb') as f:
                         conn.sendfile(f)
-                    break
-            elif event in (None, "Cancel"):
+               #     window.write('File sent successfully!')
+                except FileNotFoundError:
+                    window.write('File not found!')
+                except OSError:
+                    window.write('Error sending file!')
                 break
+        elif event in (None, 'Cancel'):
+            break
+    
+    window.close()
+    
+    conn.close()  # close the connection
 
-        self.window.close()
-
-        conn.close()  # close the connection
-
-
-class File2:
-    def __init__(self, q):
-        self.q = q
-
-    def client_program(self):
-        host = socket.gethostname()  # as both code is running on same pc
-        port = 5003  # socket server port number
-
-        client_socket = socket.socket()  # instantiate
-        client_socket.connect((host, port))  # connect to the server
-
-        # receive file from server
-        data = client_socket.recv(1024).decode()
-        filename, filesize = data.split()
-        filesize = int(filesize)
-
-        # specify the directory where the file should be saved
-        save_dir = "D:\\networks project\\Classroom\\NetworkCodes\\client files"
-
-        with open(os.path.join(save_dir, filename), "wb") as f:
-            while filesize > 0:
-                data = client_socket.recv(1024)
-                f.write(data)
-                filesize -= len(data)
-
-        client_socket.close()  # close the connection
 
 
 if __name__ == "__main__":
+    
+  #  server_program().conn.close()  # close the connection
     app = start()
     app.run()
