@@ -10,6 +10,14 @@ import subprocess
 from datetime import datetime
 
 
+########################################### THE START GUI ###################################################################
+## initialization func that start everything in the ui
+# each button has an event
+################################################events ###########################################################
+# in the run func  we have two buttons with two events one for the streaming classes and another for the file sharing class
+# in the first event we call the events of the streaming (classroomapp)class
+# in the second event we call the file1 class (which is the server starting ) and using the subprocess we start the client class
+# seperated in the fileclient.py code
 class start:
     def __init__(self):
         # Define the layout of the window
@@ -84,6 +92,9 @@ class start:
         self.window.close()
 
 
+################################################streaming ###############################################################
+## we have 3 classes for the streamingclassroomapp and gui2 and gui3
+# in classroom app we have gui with two buttons  one for the teacher and one for the stuent
 class ClassroomApp:
     def __init__(self):
         layout = [
@@ -120,6 +131,8 @@ class ClassroomApp:
 
 
 ## GUi el streaming
+## this is the gui for the teacher we enter the ip we want to share to or veiw sharing from
+# and then we press even the start sharing or viewing to call their event
 class Gui2:
     def __init__(self):
         layout = [
@@ -168,6 +181,8 @@ class Gui2:
         self.window.close()
 
 
+## this is the gui for the student we enter the ip we want to share to or veiw sharing from
+# and then we press even the start sharing or viewing to call their event
 class Gui3:
     def __init__(self):
         layout = [
@@ -216,7 +231,10 @@ class Gui3:
         self.window.close()
 
 
-## gui el files
+#################################################### gui el files #######################################################3
+# in this class we we start the server with socket and hot and the port the client should connect to
+# then the server listens to the clients that calling for that port
+# and then starts the gui for sending the files
 
 
 class File1:
