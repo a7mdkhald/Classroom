@@ -7,22 +7,25 @@ import os
 import time
 import queue
 import subprocess
+from datetime import datetime
 
 
 class start:
     def __init__(self):
         # Define the layout of the window
+        background_image = "icon5.png"
+        sg.theme("DarkAmber")
         layout = [
             [
-                sg.Image("icon1.png", size=(500, 100), pad=(1, 1)),
+                sg.Image("icon1.png", size=(800, 100), pad=(1, 1)),
             ],
-            [sg.Text("Welcome to our Classroom!", font=("Arial", 16), pad=(100, 20))],
+            [sg.Text("Welcome to our Classroom!", font=("Arial", 16), pad=(200, 20))],
             [
                 sg.Button(
                     " ",
                     image_filename="icon3.png",
-                    pad=(100 / 1, 1 / 1),
-                    image_size=(70, 70),
+                    pad=(200 / 1, 1 / 1),
+                    image_size=(100, 100),
                     image_subsample=2,
                 ),
                 sg.Button(
@@ -30,7 +33,7 @@ class start:
                     size=(10, 200),
                     pad=(0 / 1, 1 / 1),
                     image_filename="icon4.png",
-                    image_size=(70, 70),
+                    image_size=(100, 100),
                     image_subsample=2,
                 ),
             ],
@@ -38,17 +41,26 @@ class start:
                 sg.Text(
                     "Share Screen",
                     font=("Arial", 10),
-                    pad=(100 / 1, 1 / 1),
+                    pad=(200 / 1, 1 / 1),
                 ),
                 sg.Text(
                     "Share files",
                     font=("Arial", 10),
                 ),
             ],
+            [
+                sg.Text(
+                    "", size=(20, 1), font=("Arial", 16), key="time", pad=(250, 50)
+                ),
+            ],
         ]
 
         # Create the window
-        self.window = sg.Window("Classroom", layout)
+        self.window = sg.Window(
+            "Classroom",
+            layout,
+            size=(800, 500),
+        )
 
     def run(self):
         q = queue.Queue()
@@ -67,6 +79,7 @@ class start:
             elif event == "   ":
                 subprocess.Popen(["python", "fileclient.py"])
                 File1.server_program()
+            self.window["time"].update(datetime.now().strftime("Time :%H:%M:%S"))
 
         self.window.close()
 
@@ -81,7 +94,7 @@ class ClassroomApp:
             [sg.Button("Back")],
         ]
 
-        self.window = sg.Window("Classroom App", layout, size=(200, 200))
+        self.window = sg.Window("Classroom App", layout, size=(300, 300))
 
     def run(self):
         while True:
