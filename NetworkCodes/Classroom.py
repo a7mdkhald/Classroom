@@ -44,6 +44,14 @@ class start:
                     image_size=(100, 100),
                     image_subsample=2,
                 ),
+                sg.Button(
+                    "    ",
+                    size=(10, 200),
+                    pad=(0 / 1, 1 / 1),
+                    image_filename="icon5.png",
+                    image_size=(100, 100),
+                    image_subsample=2,
+                ),
             ],
             [
                 sg.Text(
@@ -53,6 +61,10 @@ class start:
                 ),
                 sg.Text(
                     "Share files",
+                    font=("Arial", 10),
+                ),
+                sg.Text(
+                    "receive files",
                     font=("Arial", 10),
                 ),
             ],
@@ -85,8 +97,9 @@ class start:
                 classroom.run()
 
             elif event == "   ":
-                subprocess.Popen(["python", "fileclient.py"])
                 File1.server_program()
+            elif event == "    ":
+                File2.client_program()
             self.window["time"].update(datetime.now().strftime("Time :%H:%M:%S"))
 
         self.window.close()
@@ -249,8 +262,6 @@ class File1:
 
         # configure how many client the server can listen simultaneously
         server_socket.listen(3)
-        conn, address = server_socket.accept()  # accept new connection
-        print("Connection from: " + str(address))
 
         # create GUI to select file to send
         layout = [
@@ -267,22 +278,71 @@ class File1:
                 filename = values["-FILE-"]
                 if filename:
                     try:
+                        conn, address = server_socket.accept()  # accept new connection
+                        print("Connection from: " + str(address))
                         filesize = os.path.getsize(filename)
                         conn.send(f"{os.path.basename(filename)} {filesize}".encode())
                         with open(filename, "rb") as f:
                             conn.sendfile(f)
-                    #     window.write('File sent successfully!')
+                        #     window.write('File sent successfully!')
+                        conn.close()  # close the connection
                     except FileNotFoundError:
                         window.write("File not found!")
                     except OSError:
                         window.write("Error sending file!")
-                    break
             elif event in (None, "Cancel"):
                 break
 
         window.close()
 
-        conn.close()  # close the connection
+
+class File2:
+    def client_program():
+        # create GUI to enter server IP address
+        layout = [
+            [sg.Text("Enter server IP address")],
+            [sg.Input(key="-IP-")],
+            [sg.Button("Connect"), sg.Button("Cancel")],
+        ]
+
+        window = sg.Window("File Receiver", layout)
+
+        while True:
+            event, values = window.read()
+            if event == "Connect":
+                host = values["-IP-"]
+                if host:
+                    break
+            elif event in (None, "Cancel"):
+                return
+
+        window.close()
+
+        port = 5003  # socket server port number
+
+        client_socket = socket.socket()  # instantiate
+        client_socket.connect((host, port))  # connect to the server
+
+        # receive file from server
+        data = client_socket.recv(1024).decode()
+        filename, filesize = data.split()
+        filesize = int(filesize)
+
+        # specify the directory where the file should be saved
+        save_dir = "D:\testing"
+
+        try:
+            with open(os.path.join(save_dir, filename), "wb") as f:
+                while filesize > 0:
+                    data = client_socket.recv(1024)
+                    f.write(data)
+                    filesize -= len(data)
+            client_socket.close()  # close the connection
+            print("File received successfully!")
+        except FileNotFoundError:
+            print("File not found!")
+        except OSError:
+            print("Error saving file!")
 
 
 if __name__ == "__main__":
