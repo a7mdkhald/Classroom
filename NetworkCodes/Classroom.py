@@ -100,7 +100,7 @@ class start:
                 File1.server_program()
             elif event == "    ":
                 File2.client_program()
-            self.window["time"].update(datetime.now().strftime("Time: %H:%M:%S"))
+            self.window["time"].update(datetime.now().strftime("Time :%H:%M:%S"))
 
         self.window.close()
 
@@ -283,9 +283,13 @@ class File1:
                         filesize = os.path.getsize(filename)
                         conn.send(f"{os.path.basename(filename)} {filesize}".encode())
                         with open(filename, "rb") as f:
-                            conn.sendfile(f)
-                        #     window.write('File sent successfully!')
+                            while True:
+                                data = f.read(1024)
+                                if not data:
+                                    break
+                                conn.sendall(data)
                         conn.close()  # close the connection
+                        print("File sent successfully!")
                     except FileNotFoundError:
                         window.write("File not found!")
                     except OSError:
@@ -329,7 +333,7 @@ class File2:
         filesize = int(filesize)
 
         # specify the directory where the file should be saved
-        save_dir = "D:\testing"
+        save_dir = "D:\\testing"
 
         try:
             with open(os.path.join(save_dir, filename), "wb") as f:
