@@ -100,7 +100,7 @@ class start:
                 File1.server_program()
             elif event == "    ":
                 File2.client_program()
-            self.window["time"].update(datetime.now().strftime("Time :%H:%M:%S"))
+            self.window["time"].update(datetime.now().strftime("Time: %H:%M:%S"))
 
         self.window.close()
 
